@@ -304,10 +304,13 @@ end
 
 function Api.setup()
   loadOptionalConfig("OPENAI_API_HOST", "OPENAI_API_HOST", "api_host_cmd", function(host)
-    Api.OPENAI_API_HOST = host
-    Api.COMPLETIONS_URL = ensureUrlProtocol(Api.OPENAI_API_HOST .. "/v1/completions")
-    Api.CHAT_COMPLETIONS_URL = ensureUrlProtocol(Api.OPENAI_API_HOST .. "/v1/chat/completions")
-    Api.EDITS_URL = ensureUrlProtocol(Api.OPENAI_API_HOST .. "/v1/edits")
+    loadOptionalConfig("OPENAI_API_VERSION", "OPENAI_API_VERSION", "api_version_cmd", function(version)
+      Api.OPENAI_API_HOST = host
+      Api.OPENAI_API_VERSION = version
+      Api.COMPLETIONS_URL = ensureUrlProtocol(Api.OPENAI_API_HOST .. "/".. version .. "/completions")
+      Api.CHAT_COMPLETIONS_URL = ensureUrlProtocol(Api.OPENAI_API_HOST .. "/".. version .. "/chat/completions")
+      Api.EDITS_URL = ensureUrlProtocol(Api.OPENAI_API_HOST .. "/".. version .. "/edits")
+    end, "v1")
   end, "api.openai.com")
 
   loadRequiredConfig("OPENAI_API_KEY", "OPENAI_API_KEY", "api_key_cmd", function(key)
